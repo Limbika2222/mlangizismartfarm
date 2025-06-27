@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Soil Check | Mlangizi{% endblock %}
+
+{% block hero %}{% endblock %}
+
+{% block content %}
+<h2 class="text-white text-center">🧪 Soil Health Checker</h2>
+<p class="text-white text-center">Choose your method to check soil health:</p>
+
+<div class="text-center mb-4">
+  <a href="{{ url_for('soil_check', method='scientific') }}" class="btn btn-{{ 'light' if method == 'scientific' else 'outline-light' }} me-2">🔬 Scientific</a>
+  <a href="{{ url_for('soil_check', method='visual') }}" class="btn btn-{{ 'light' if method == 'visual' else 'outline-light' }} me-2">👁️ Visual</a>
+  <button class="btn btn-outline-light" disabled>🤖 AI (Coming Soon)</button>
+</div>
+
+{% if method == 'scientific' %}
+<!-- Scientific Method Form -->
+<form method="POST" class="row g-3 mt-2 text-white">
+  <div class="col-md-3">
+    <label for="ph" class="form-label">Soil pH</label>
+    <input type="number" step="0.1" name="ph" class="form-control" required>
+  </div>
+  <div class="col-md-3">
+    <label for="nitrogen" class="form-label">Nitrogen (N)</label>
+    <input type="number" name="nitrogen" class="form-control" required>
+  </div>
+  <div class="col-md-3">
+    <label for="phosphorus" class="form-label">Phosphorus (P)</label>
+    <input type="number" name="phosphorus" class="form-control" required>
+  </div>
+  <div class="col-md-3">
+    <label for="potassium" class="form-label">Potassium (K)</label>
+    <input type="number" name="potassium" class="form-control" required>
+  </div>
+  <div class="col-12 text-center mt-3">
+    <button type="submit" class="btn btn-success">Analyze Soil</button>
+  </div>
+</form>
+
+{% elif method == 'visual' %}
+<!-- Visual Observation Method Form -->
+<form method="POST" class="row g-3 mt-2 text-white" id="visual-form">
+  <div class="col-md-4">
+    <label for="soil_color" class="form-label">What color is your soil?</label>
+    <select name="soil_color" class="form-select" required>
+      <option value="">Select</option>
+      <option value="red_brown">Red/Brown</option>
+      <option value="black">Black</option>
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <label for="drainage" class="form-label">How does water behave in your field?</label>
+    <select name="drainage" class="form-select" required>
+      <option value="">Select</option>
+      <option value="poor">Poor drainage (water stays)</option>
+      <option value="good">Good drainage (drains quickly)</option>
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <label for="crop_growth" class="form-label">How well do your crops grow?</label>
+    <select name="crop_growth" class="form-select" required>
+      <option value="">Select</option>
+      <option value="yellow_leaves">Yellowing Leaves</option>
+      <option value="purple_leaves">Purple/Red Leaves</option>
+      <option value="burned_edges">Burned leaf edges / weak stems</option>
+      <option value="healthy">Healthy Growth</option>
+    </select>
+  </div>
+
+  <!-- Toggle Advanced -->
+  <div class="col-12">
+    <div class="form-check form-switch text-start">
+      <input class="form-check-input" type="checkbox" id="toggleAdvanced">
+      <label class="form-check-label" for="toggleAdvanced">Show Advanced Questions</label>
+    </div>
+  </div>
+
+  <!-- Advanced Questions (hidden by default) -->
+  <div id="advanced-questions" style="display: none;">
+    <div class="col-md-4">
+      <label for="compost_use" class="form-label">Do you use compost or manure?</label>
+      <select name="compost_use" class="form-select">
+        <option value="">Select</option>
+        <option value="often">Yes, regularly</option>
+        <option value="rarely">Sometimes</option>
+        <option value="never">Never</option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label for="soil_feel" class="form-label">When dry, is your soil...</label>
+      <select name="soil_feel" class="form-select">
+        <option value="">Select</option>
+        <option value="hard">Hard / Crusty</option>
+        <option value="soft">Soft / Loose</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-12 text-center mt-3">
+    <button type="submit" class="btn btn-success">Analyze Observations</button>
+  </div>
+</form>
+
+<!-- Toggle Script -->
+<script>
+  document.getElementById('toggleAdvanced').addEventListener('change', function () {
+    const section = document.getElementById('advanced-questions');
+    section.style.display = this.checked ? 'flex' : 'none';
+    section.classList.toggle('row', this.checked);
+  });
+</script>
+{% endif %}
+
+{% if recommendation %}
+<div class="alert alert-success text-center mt-4" role="alert">
+  <strong>Recommendation:</strong> {{ recommendation }}
+</div>
+{% endif %}
+{% endblock %}

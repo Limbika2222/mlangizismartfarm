@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% set hide_hero = True %}
+
+{% block title %}Chat | Mlangizi{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h3 class="text-white mb-4 text-center">🤖 Mlangizi AI Chat Assistant</h3>
+
+  <div id="chat-box" class="p-3 rounded" 
+       style="height: 350px; overflow-y: auto; background-color: #1e1e2f; color: #f1f1f1; border: 1px solid #444;">
+  </div>
+
+  <div class="mt-3 d-flex">
+    <input type="text" id="message" 
+           class="form-control me-2 bg-dark text-white border-secondary" 
+           placeholder="Type your message..." />
+    <button onclick="sendMessage()" class="btn btn-success">Send</button>
+  </div>
+</div>
+
+<style>
+  #chat-box div {
+    margin-bottom: 12px;
+  }
+  .user-msg {
+    background-color: #2b2b3c;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 80%;
+    margin-left: auto;
+    text-align: right;
+  }
+  .mlangizi-msg {
+    background-color: #34344a;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 80%;
+    margin-right: auto;
+    text-align: left;
+  }
+  .thinking {
+    font-style: italic;
+    color: #cccccc;
+    text-align: center;
+  }
+</style>
+
+<script>
+  function sendMessage() {
+    const msg = document.getElementById("message").value.trim();
+    if (!msg) return;
+
+    const chatBox = document.getElementById("chat-box");
+    chatBox.innerHTML += `<div class="user-msg"><strong>You:</strong> ${msg}</div>`;
+    document.getElementById("message").value = "";
+
+    const thinkingMsg = document.createElement('div');
+    thinkingMsg.classList.add('thinking');
+    thinkingMsg.textContent = "Mlangizi is thinking...";
+    chatBox.appendChild(thinkingMsg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: msg })
+    })
+    .then(response => response.json())
+    .then(data => {
+      thinkingMsg.remove();
+      chatBox.innerHTML += `<div class="mlangizi-msg"><strong>Mlangizi:</strong> ${data.reply}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    })
+    .catch(error => {
+      thinkingMsg.remove();
+      chatBox.innerHTML += `<div class="mlangizi-msg text-danger"><strong>Error:</strong> ${error}</div>`;
+    });
+  }
+</script>
+{% endblock %}

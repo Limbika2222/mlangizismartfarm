@@ -1,0 +1,12 @@
+flask
+flask-login
+requests
+scikit-learn
+pandas
+numpy
+xgboost
+prophet
+torch
+torchvision
+opencv-python
+pillow

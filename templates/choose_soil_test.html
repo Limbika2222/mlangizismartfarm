@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Choose Soil Test | Mlangizi{% endblock %}
+
+{% block hero %}{% endblock %}
+
+{% block content %}
+<h2 class="text-white text-center">🧪 Choose Your Soil Health Test</h2>
+<p class="text-white text-center">Select a method based on what resources you have available.</p>
+
+<div class="row g-4 mt-4 text-center">
+  <!-- Scientific Method -->
+  <div class="col-md-4">
+    <div class="card bg-success text-white h-100">
+      <div class="card-body">
+        <h4 class="card-title">🔬 Scientific Method</h4>
+        <p class="card-text">Use lab or kit results for pH, Nitrogen, Phosphorus, Potassium.</p>
+        <a href="{{ url_for('soil_check') }}" class="btn btn-light">Start</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visual Observation -->
+  <div class="col-md-4">
+    <div class="card bg-warning text-dark h-100">
+      <div class="card-body">
+        <h4 class="card-title">👁️ Visual Method</h4>
+        <p class="card-text">Answer simple questions based on what you see on your farm.</p>
+        <a href="#" class="btn btn-dark disabled">Coming Soon</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI-Based (Future) -->
+  <div class="col-md-4">
+    <div class="card bg-secondary text-white h-100">
+      <div class="card-body">
+        <h4 class="card-title">🤖 AI-Based Method</h4>
+        <p class="card-text">Let AI analyze your soil using photos and past data.</p>
+        <a href="#" class="btn btn-outline-light disabled">Coming Soon</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

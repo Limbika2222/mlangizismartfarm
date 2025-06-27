@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up | Mlangizi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('/static/green-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+        }
+        .signup-container {
+            max-width: 500px;
+            margin: 10vh auto;
+            background-color: rgba(0, 100, 0, 0.7);
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h2 class="text-center">Create an Account</h2>
+        {% if message %}
+            <div class="alert alert-info mt-3">{{ message }}</div>
+        {% endif %}
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-light w-100">Sign Up</button>
+        </form>
+        <p class="text-center mt-3"><a href="/welcome" class="text-white">← Back to Welcome</a></p>
+    </div>
+</body>
+</html>

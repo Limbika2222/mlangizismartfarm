@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Mlangizi{% endblock %}
+
+{% block hero %}{% endblock %}
+
+{% block content %}
+<h2 class="text-center text-white mb-4">📊 Your Dashboard</h2>
+
+{% if soil_checks %}
+  <div class="mb-3 text-center">
+    <a href="{{ url_for('export_csv') }}" class="btn btn-success me-2">⬇️ Download CSV</a>
+    <button onclick="window.print()" class="btn btn-secondary">🖨️ Print / Save PDF</button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover bg-white text-center">
+      <thead class="table-success">
+        <tr>
+          <th>Date</th>
+          <th>Method</th>
+          <th>Inputs</th>
+          <th>Recommendation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in soil_checks %}
+        <tr>
+          <td>{{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td class="text-capitalize">{{ entry.method }}</td>
+          <td>
+            {% if entry.method == 'scientific' %}
+              pH: {{ entry.ph }}, N: {{ entry.nitrogen }}, P: {{ entry.phosphorus }}, K: {{ entry.potassium }}
+            {% else %}
+              Color: {{ entry.visual_color }}<br>
+              Drainage: {{ entry.drainage }}<br>
+              Growth: {{ entry.crop_growth }}
+            {% endif %}
+          </td>
+          <td>{{ entry.recommendation }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="my-4 text-white" />
+
+  <h3 class="text-white">Soil Test Visualizations</h3>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="bg-white p-3 rounded">
+        <canvas id="phChart" style="max-height: 280px;"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="bg-white p-3 rounded">
+        <canvas id="npkChart" style="max-height: 280px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-6 offset-md-3">
+      <div class="bg-white p-3 rounded">
+        <canvas id="methodChart" style="max-height: 260px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="text/javascript">
+    const phData = JSON.parse('{{ ph_data | tojson | safe }}');
+    const npkData = JSON.parse('{{ npk_data | tojson | safe }}');
+    const methodData = JSON.parse('{{ method_data | tojson | safe }}');
+
+    if (phData.length > 0) {
+      new Chart(document.getElementById('phChart'), {
+        type: 'line',
+        data: {
+          labels: phData.map(e => e.date),
+          datasets: [{
+            label: 'pH Over Time',
+            data: phData.map(e => e.value),
+            borderColor: 'green',
+            tension: 0.3,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              suggestedMax: 10
+            }
+          }
+        }
+      });
+    } else {
+      document.getElementById('phChart').parentElement.innerHTML = '<p class="text-muted text-center">No pH data to show.</p>';
+    }
+
+    new Chart(document.getElementById('npkChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Nitrogen', 'Phosphorus', 'Potassium'],
+        datasets: [{
+          label: 'Average NPK Levels',
+          data: [npkData.n, npkData.p, npkData.k],
+          backgroundColor: ['#4CAF50', '#FF9800', '#2196F3']
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('methodChart'), {
+      type: 'pie',
+      data: {
+        labels: ['Scientific', 'Visual'],
+        datasets: [{
+          data: [methodData.scientific, methodData.visual],
+          backgroundColor: ['#8E44AD', '#27AE60']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+  </script>
+
+{% else %}
+  <p class="text-white text-center">No soil health checks submitted yet.</p>
+{% endif %}
+{% endblock %}

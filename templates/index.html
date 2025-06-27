@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Mlangizi{% endblock %}
+
+{% block content %}
+<h2 class="text-white text-center mt-4">
+  {% if username %}
+     Welcome, {{ username }}!
+  {% else %}
+     Mlangizi SmartFarm Platform
+  {% endif %}
+</h2>
+<p class="lead text-white text-center">Empowering farmers in Malawi with AI-driven crop management tools</p>
+
+<div class="row g-4 mt-4 text-center">
+
+  <div class="col-md-6 col-lg-3">
+    <a href="#" class="btn-card text-white text-decoration-none p-3 d-block border rounded bg-success h-100">
+      <h4> Weather-Based Planning</h4>
+      <p class="small">Get forecasts and schedule the perfect planting time.</p>
+    </a>
+  </div>
+
+  <div class="col-md-6 col-lg-3">
+    <a href="{{ url_for('soil_check') }}" class="btn-card text-white text-decoration-none p-3 d-block border rounded bg-success h-100">
+      <h4> Soil Health Monitoring</h4>
+      <p class="small">Input test results and get soil improvement suggestions.</p>
+    </a>
+  </div>
+
+  <div class="col-md-6 col-lg-3">
+    <a href="#" class="btn-card text-white text-decoration-none p-3 d-block border rounded bg-success h-100">
+      <h4> Fertilizer Optimization</h4>
+      <p class="small">AI-powered suggestions for fertilizer types and amounts.</p>
+    </a>
+  </div>
+
+  <div class="col-md-6 col-lg-3">
+    <a href="#" class="btn-card text-white text-decoration-none p-3 d-block border rounded bg-success h-100">
+      <h4> Disease Detection</h4>
+      <p class="small">Upload crop images for instant disease diagnosis.</p>
+    </a>
+  </div>
+
+  <div class="col-md-6 col-lg-3">
+    <a href="{{ url_for('planning') }}" class="btn-card text-white text-decoration-none p-3 d-block border rounded bg-success h-100">
+      <h4> Farm Planning</h4>
+      <p class="small">Create and manage a to-do list of farm activities and schedules.</p>
+    </a>
+  </div>
+
+  <div class="col-md-6 col-lg-3">
+    <a href="{{ url_for('budget') }}" class="btn-card text-white text-decoration-none p-3 d-block border rounded bg-success h-100">
+      <h4> Budget Tracking</h4>
+      <p class="small">Record and view your farm-related expenditures over time.</p>
+    </a>
+  </div>
+
+  <div class="col-md-6 col-lg-3">
+    <a href="{{ url_for('chat') }}" class="btn-card text-white text-decoration-none p-3 d-block border rounded bg-success h-100">
+      <h4> Ask Mlangizi AI</h4>
+      <p class="small">Chat with AI to get quick recommendations and advice.</p>
+    </a>
+  </div>
+
+</div>
+{% endblock %}
