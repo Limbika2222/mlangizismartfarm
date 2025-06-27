@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% set hide_hero = True %}
+
+{% block title %}Weather Based Planning{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card shadow-lg">
+    <div class="card-header bg-success text-white text-center">
+      <h4 class="mb-0">🌤️ Weekly Weather Based Planning</h4>
+    </div>
+    <div class="card-body">
+
+      <!-- Location Selection Form -->
+      <form method="get" action="{{ url_for('weather') }}" class="row g-3 mb-4 justify-content-center">
+        <div class="col-auto">
+          <input type="text" name="city" class="form-control" placeholder="Enter city" value="{{ city or '' }}">
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-success">Check Weather</button>
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-outline-success" onclick="getLocation()">Use Current Location</button>
+        </div>
+      </form>
+
+      <!-- Weather Table -->
+      {% if suggestions %}
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+          <thead class="table-success">
+            <tr>
+              <th scope="col">Date & Time</th>
+              <th scope="col">Weather</th>
+              <th scope="col">Temp (°C)</th>
+              <th scope="col">Suggested Activity</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in suggestions %}
+            <tr>
+              <td>{{ item.date }}</td>
+              <td>
+                {% if item.weather == 'Rain' %}
+                  🌧️ {{ item.weather }}
+                {% elif item.weather == 'Clear' %}
+                  ☀️ {{ item.weather }}
+                {% elif item.weather == 'Clouds' %}
+                  ☁️ {{ item.weather }}
+                {% else %}
+                  {{ item.weather }}
+                {% endif %}
+              </td>
+              <td>{{ item.temp }}</td>
+              <td class="fw-bold text-success">{{ item.plan }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-center text-danger">No weather data available. Please try again later.</p>
+      {% endif %}
+
+      <div class="text-center mt-4">
+        <a href="{{ url_for('planning') }}" class="btn btn-success btn-lg">
+          <i class="bi bi-arrow-left"></i> Back to Planning
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript to get current location -->
+<script>
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(sendPosition);
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+}
+
+function sendPosition(position) {
+  const lat = position.coords.latitude;
+  const lon = position.coords.longitude;
+  window.location.href = `{{ url_for('weather') }}?lat=${lat}&lon=${lon}`;
+}
+</script>
+
+{% endblock %}

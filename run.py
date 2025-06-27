@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta, datetime, date
 from io import StringIO
 import csv
+import requests
 import google.generativeai as genai
 
 app = Flask(__name__)
@@ -20,6 +21,9 @@ db.init_app(app)
 # === Configure Gemini ===
 genai.configure(api_key="AIzaSyAMVb_p6I8nUx8VgwRPrXMl86F8RTt36xE")
 
+# === OpenWeatherMap API Key ===
+WEATHER_API_KEY = "2a63741b8277fae8c75973c751734d95"
+
 # === Routes ===
 
 @app.route('/')
@@ -35,6 +39,8 @@ def home():
     if not session.get('user_id'):
         return redirect(url_for('login'))
     return render_template('index.html', username=session.get('username'), year=datetime.now().year)
+
+# === Dashboard ===
 
 @app.route('/dashboard')
 def dashboard():
@@ -71,6 +77,8 @@ def dashboard():
                            username=session.get('username'),
                            year=datetime.now().year)
 
+# === Export CSV ===
+
 @app.route('/export-csv')
 def export_csv():
     if not session.get('user_id'):
@@ -100,6 +108,8 @@ def export_csv():
     response = Response(si.getvalue(), mimetype='text/csv')
     response.headers['Content-Disposition'] = 'attachment; filename=soil_data.csv'
     return response
+
+# === Soil Check ===
 
 @app.route('/soil-check', methods=['GET', 'POST'])
 def soil_check():
@@ -171,7 +181,7 @@ def soil_check():
 
     return render_template('soil_check.html', recommendation=recommendation, method=method)
 
-# === Planning Feature ===
+# === Planning ===
 
 @app.route('/planning', methods=['GET', 'POST'])
 def planning():
@@ -194,7 +204,7 @@ def planning():
 
     tasks = PlanningTask.query.filter_by(user_id=session['user_id']).order_by(PlanningTask.due_date).all()
     return render_template('planning.html', tasks=tasks, username=session.get('username'),
-                           current_date=date.today(), today=date.today())  # ✅ Fix here
+                           current_date=date.today(), today=date.today())
 
 @app.route('/planning/done/<int:task_id>')
 def mark_task_done(task_id):
@@ -214,11 +224,63 @@ def delete_task(task_id):
     db.session.commit()
     return redirect(url_for('planning'))
 
+# === Budget ===
+
 @app.route('/budget')
 def budget():
     if not session.get('user_id'):
         return redirect(url_for('login'))
     return render_template('budget.html')
+
+# === Weather Based Planning (Updated) ===
+
+@app.route('/weather')
+def weather():
+    if not session.get('user_id'):
+        return redirect(url_for('login'))
+
+    city = request.args.get('city')
+    lat = request.args.get('lat')
+    lon = request.args.get('lon')
+
+    if lat and lon:
+        url = f"http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={WEATHER_API_KEY}&units=metric"
+    else:
+        if not city:
+            city = "Lilongwe"
+        url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={WEATHER_API_KEY}&units=metric"
+
+    response = requests.get(url)
+    data = response.json()
+
+    suggestions = []
+    if "list" in data:
+        for forecast in data["list"]:
+            dt_txt = forecast["dt_txt"]
+            weather_main = forecast["weather"][0]["main"]
+            temp = forecast["main"]["temp"]
+
+            if "rain" in weather_main.lower():
+                plan = "Avoid pesticide spraying"
+            elif temp > 30:
+                plan = "Irrigate crops early morning or evening"
+            elif temp < 20:
+                plan = "Monitor crops for cold stress"
+            else:
+                plan = "Good day for general farm work"
+
+            suggestions.append({
+                "date": dt_txt,
+                "weather": weather_main,
+                "temp": temp,
+                "plan": plan
+            })
+    else:
+        suggestions = None
+
+    return render_template('weather.html', suggestions=suggestions, city=city, username=session.get('username'))
+
+# === Chat ===
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
@@ -231,6 +293,8 @@ def chat():
         except Exception as e:
             return jsonify({'reply': f"Error: {str(e)}"})
     return render_template('chat.html')
+
+# === Auth ===
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -290,6 +354,7 @@ def show_users():
     return "<br>".join([f"{u.id}: {u.username}, {u.email}" for u in users])
 
 # === Run the App ===
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

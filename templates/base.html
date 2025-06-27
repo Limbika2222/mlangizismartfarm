@@ -49,7 +49,10 @@
         <a class="nav-link" href="{{ url_for('home') }}"><i class="bi bi-house-door-fill me-2"></i> Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#"><i class="bi bi-info-circle me-2"></i> About</a>
+        <a class="nav-link" href="{{ url_for('planning') }}"><i class="bi bi-calendar-check-fill me-2"></i> Planning</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('weather') }}"><i class="bi bi-cloud-sun-fill me-2"></i> Weather</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('chat') }}"><i class="bi bi-chat-dots me-2"></i> Chat</a>
@@ -90,6 +93,8 @@
         <h6>Quick Links</h6>
         <ul class="list-unstyled">
           <li><a href="{{ url_for('home') }}" class="text-white">Home</a></li>
+          <li><a href="{{ url_for('planning') }}" class="text-white">Planning</a></li>
+          <li><a href="{{ url_for('weather') }}" class="text-white">Weather</a></li>
           <li><a href="#" class="text-white">Disease Detection</a></li>
           <li><a href="#" class="text-white">Community</a></li>
           <li><a href="#" class="text-white">Contact</a></li>
