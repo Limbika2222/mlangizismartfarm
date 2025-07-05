@@ -148,4 +148,38 @@
 {% else %}
   <p class="text-white text-center">No soil health checks submitted yet.</p>
 {% endif %}
+
+<hr class="my-4 text-white" />
+
+<h3 class="text-white">🌽 Maize Disease Detection History</h3>
+
+{% if detections %}
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover bg-white text-center">
+      <thead class="table-primary">
+        <tr>
+          <th>Date</th>
+          <th>Image</th>
+          <th>Predicted Class</th>
+          <th>Confidence</th>
+          <th>Treatment</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for detection in detections %}
+        <tr>
+          <td>{{ detection.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td><img src="{{ url_for('static', filename=detection.image_path.split('static/')[-1]) }}" alt="Leaf" style="max-width: 100px;"></td>
+          <td>{{ detection.predicted_class }}</td>
+          <td>{{ detection.confidence }}%</td>
+          <td>{{ detection.treatment }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <p class="text-white text-center">No disease detections yet.</p>
+{% endif %}
+
 {% endblock %}

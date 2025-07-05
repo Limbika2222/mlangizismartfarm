@@ -1,8 +1,11 @@
-<section class="hero-section">
-  <h1 class="hero-title">Empowering Smart Farming in Malawi</h1>
-  <p class="hero-subtitle">AI-powered tools to support every farmer</p>
-  <div class="mt-3">
-    <a href="/" class="btn btn-success btn-lg me-2">Get Started</a>
-    <a href="/soil-check" class="btn btn-outline-light btn-lg">Try Disease Detection</a>
+<section class="hero-section d-flex align-items-center text-center text-white">
+  <div class="overlay"></div>
+  <div class="container position-relative">
+    <h1 class="display-4 fw-bold">Empowering Smart Farming in Malawi</h1>
+    <p class="lead">AI-powered tools to support every farmer</p>
+    <div class="mt-3">
+      <a href="{{ url_for('signup') }}" class="btn btn-success btn-lg me-2">Get Started</a>
+      <a href="{{ url_for('soil_check') }}" class="btn btn-outline-light btn-lg">Try Soil Check</a>
+    </div>
   </div>
 </section>

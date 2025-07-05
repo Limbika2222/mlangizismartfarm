@@ -1,15 +1,31 @@
-# Python cache files
+# Python
 __pycache__/
 *.pyc
-
-# Virtual environment
-venv/
-
-# Instance folder (Flask secrets, db files)
-instance/
-
-# SQLite database files
+*.pyo
+*.pyd
+*.sqlite3
 *.db
 
-# Environment variables
-.env
+# Virtual environments
+venv/
+env/
+.maizeenv/
+maizeenv/
+
+# MacOS
+.DS_Store
+
+# VSCode
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Flask secret keys
+*.env
+
+# TensorFlow models if not needed
+*.h5
+
+# Migrations cache
+migrations/versions/__pycache__/

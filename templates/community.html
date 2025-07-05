@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Community | Mlangizi{% endblock %}
+
+{% block content %}
+
+{% set hide_hero = True %}
+
+<div class="container my-4">
+  <h2 class="text-center text-success mb-4">🌱 Mlangizi Community</h2>
+
+  <!-- Post Form -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <textarea name="content" class="form-control" rows="3" placeholder="What's on your mind?"></textarea>
+        </div>
+        <div class="mb-3">
+          <input type="file" name="image" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-success">Post</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Posts -->
+  {% for post in posts %}
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+      <div>
+        <strong>{{ post.author.username }}</strong>
+        <small class="ms-2">{{ post.timestamp.strftime('%b %d, %Y %H:%M') }}</small>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>{{ post.content }}</p>
+
+      {% if post.image_path %}
+      <img src="{{ post.image_path }}" alt="Post Image" class="img-fluid rounded mb-3">
+      {% endif %}
+
+      <!-- Post Reaction count -->
+      {% set post_reactions = reactions | selectattr("post_id", "equalto", post.id) | list %}
+      <div class="mb-2">
+        <small class="text-muted">{{ post_reactions | length }} reactions</small>
+      </div>
+
+      <!-- Post Reaction buttons -->
+      <div class="d-flex gap-2 mb-3">
+        <a href="{{ url_for('react_post', post_id=post.id, emoji='👍') }}" class="text-decoration-none">👍 Like</a>
+        <a href="{{ url_for('react_post', post_id=post.id, emoji='❤️') }}" class="text-decoration-none">❤️ Love</a>
+        <a href="{{ url_for('react_post', post_id=post.id, emoji='😂') }}" class="text-decoration-none">😂 Haha</a>
+      </div>
+
+      <!-- Comments -->
+      <div class="mt-3">
+        {% for comment in comments if comment.post_id == post.id %}
+        <div class="border-top pt-2 mt-2">
+          <p class="mb-1"><strong>{{ comment.author.username }}</strong> {{ comment.content }}</p>
+
+          <!-- Comment reaction count -->
+          {% set comment_reactions = reactions | selectattr("comment_id", "equalto", comment.id) | list %}
+          <div class="mb-2">
+            <small class="text-muted">{{ comment_reactions | length }} reactions</small>
+          </div>
+
+          <!-- Comment Reaction buttons -->
+          <div class="d-flex gap-2 mb-2">
+            <a href="{{ url_for('react_comment', comment_id=comment.id, emoji='👍') }}" class="text-decoration-none">👍 Like</a>
+            <a href="{{ url_for('react_comment', comment_id=comment.id, emoji='❤️') }}" class="text-decoration-none">❤️ Love</a>
+            <a href="{{ url_for('react_comment', comment_id=comment.id, emoji='😂') }}" class="text-decoration-none">😂 Haha</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Add Comment -->
+      <form method="POST" action="{{ url_for('add_comment', post_id=post.id) }}" class="mt-2">
+        <div class="input-group">
+          <input type="text" name="comment" class="form-control" placeholder="Write a comment...">
+          <button type="submit" class="btn btn-outline-success">Comment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-center">No posts yet. Be the first to share something!</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

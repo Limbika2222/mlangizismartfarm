@@ -1,3 +1,7 @@
+/* ============================================
+   Mlangizi Smart Farming - styles.css
+   ============================================ */
+
 /* General body style */
 body {
   background: url("/static/green-bg.jpg") no-repeat center center fixed;
@@ -16,16 +20,25 @@ body {
 
 /* Hero Section */
 .hero-section {
-  min-height: 80vh;
-  background: url("/static/hero-bg.jpg") no-repeat center center;
+  background-image: url("/static/hero-bg.jpg");
   background-size: cover;
-  padding: 3rem 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+  background-position: center;
+  min-height: 400px;
+  position: relative;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1;
+}
+
+.hero-section .container {
+  position: relative;
+  z-index: 2;
 }
 
 .hero-title {
@@ -35,9 +48,18 @@ body {
 
 .hero-subtitle {
   font-size: 1.3rem;
+  margin-bottom: 1rem;
 }
 
-/* Main Content Container */
+/* Buttons in hero section */
+.hero-section .btn {
+  font-size: 1.1rem;
+  padding: 0.8rem 2rem;
+  margin: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+/* Main Content Container (Dashboard features) */
 .container.features {
   background-color: rgba(0, 100, 0, 0.6);
   padding: 2rem;
@@ -66,6 +88,19 @@ body {
   transform: scale(1.03);
   cursor: pointer;
   text-decoration: none;
+}
+
+/* Suggested Activity Styling (Weather Page) */
+.suggested-activity {
+  background-color: rgba(0, 80, 0, 0.85); /* dark green semi-transparent */
+  color: #ffffff; /* white text */
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 1.5rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
 /* Footer */
@@ -103,8 +138,13 @@ body {
     font-size: 2rem;
   }
 
-  h2 {
-    font-size: 1.5rem;
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .hero-section .btn {
+    font-size: 1rem;
+    padding: 0.6rem 1.5rem;
   }
 
   .footer .col-md-4 {
